@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "CheckOut";
+}
+
+<style>
+    .error {
+        color: red;
+    }
+</style>
+<link href="~/Content/assets/styles/StyleSheet.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+<div class="container product_section_container">
+    <div class="row">
+        <div class="col product_section clearfix">
+
+            <!-- Breadcrumbs -->
+
+            <div class="breadcrumbs d-flex flex-row align-items-center">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li class="active">
+                        <a href="/"><i class="fa fa-angle-right" aria-hidden="true"></i>Shopping Cart</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1>Payment</h1>
+                    <p>Please check your order information again for accuracy!</p>
+                </div>
+
+            </div>
+            <hr />
+            @if (ViewBag.CheckCart != null)
+            {
+                <div class="row">
+                    <div id="showSuccess"></div>
+                    <div class="col-md-8">
+                        @Html.Action("Partial_CheckOut", "ShoppingCart")
+                    </div>
+                    <div class="col-md-4">
+                        @Html.Action("Partial_Item_Payment", "ShoppingCart")
+
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div>You do not have any products. Please return to the <a href="/collection">collection page</a> to purchase.</div>
+            }
+
+        </div>
+    </div>
+</div>
+    @section scripts{
+        <script src="~/Content/assets/js/categories_custom.js"></script>
+        <script>
+
+            $(document).ready(function () {
+                $('#myCheckOutForm').validate({
+                    rules: {
+                        'CustomerName': {
+                            required: true
+                        },
+                        'Phone': {
+                            required: true
+                        },
+                        'Address': {
+                            required: true
+                        },
+                        'Email':{
+                            required: true,
+                            email: true
+
+                        }
+                    },
+                    messages: {
+                        'CustomerName': 'You cannot leave this field blank!',
+                        'Phone': 'You cannot leave this field blank!',
+                        'Address': 'You cannot leave this field blank!',
+                        'Email': 'You cannot leave this field blank!',
+                        'CustomerName': 'Invalid email!',
+                    }
+
+                });
+            });
+            function OnFailure(rs) {
+                if (!rs.success) {
+                    $('#showSuccess').html("Your purchase failed! Please try again!!")
+                }
+            }
+            function OnBeginCO() {
+                $('#btnCheckOut').attr("disabled", "disabled");
+                $('#load_send').html('<h2>Sending....</h2>');
+            }
+            function OnSuccessCO(res) {
+                if (res.Success) {
+                    if (res.Code == 1) {
+                        location.href = "/ShoppingCart/CheckOutSuccess";
+                    }
+                    else {
+                        location.href = res.Url;
+                    }
+                }
+            }
+            function OnFailure(rs) {
+                $('#showSuccess').html("Your purchase failed! Please try again!!");
+                $('#btnCheckOut').prop('disabled', false);
+            }
+                //function OnFailure() {
+
+                //}
+                        
+        </script>
+
+    }

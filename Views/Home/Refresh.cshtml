@@ -1,0 +1,26 @@
+﻿@model ConsignmentWebsite.Models.StatisticModel
+
+@if (Model != null)
+{
+    <div class="statistic">
+        <table class="table">
+            <tr>
+                <td>Today</td>
+                <td>@Model.Today</td>
+            </tr>
+            <tr>
+                <td>Yesterday</td>
+                <td>@Model.Yesterday</td>
+            </tr>
+            <tr>
+                <td>This week</td>
+                <td>@Model.ThisWeek</td>
+            </tr>
+            <tr>
+                <td>People online</td>
+                <td>@ViewBag.Visitors_online</td>
+            </tr>
+
+        </table>
+    </div>
+}

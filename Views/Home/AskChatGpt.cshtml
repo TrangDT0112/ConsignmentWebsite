@@ -1,0 +1,264 @@
+﻿<!-- ChatGPT Icon + Box -->
+<style>
+    #chat-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: lightgreen;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+        #chat-icon img {
+            width: 60%;
+            height: 60%;
+        }
+
+    #chat-box {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 300px;
+        height: 400px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+        display: flex;
+        flex-direction: column; /* Sắp xếp dọc */
+        overflow: hidden;
+        z-index: 999;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Header */
+    #chat-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: darkgreen;
+        color: white;
+        padding: 15px;
+        position: relative;
+    }
+
+        #chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        #chat-header p {
+            font-size: 12px;
+            margin: 0;
+        }
+
+    #close-chat {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    /* Chat content */
+    #chat-content {
+        padding: 15px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    #chat-form {
+        border-top: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+
+
+    .msg {
+        max-width: 80%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 18px;
+        line-height: 1.4;
+    }
+
+    .user {
+        background: darkgreen;
+        color: white;
+        align-self: flex-end;
+        margin-left: auto;
+    }
+
+    .bot {
+        background: #f1f1f1;
+        color: #333;
+        align-self: flex-start;
+        margin-right: auto;
+    }
+
+    .quick-reply {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+        .quick-reply button {
+            padding: 6px 10px;
+            border: 1px solid darkgreen;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            color: darkgreen;
+        }
+
+    .feedback {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    /* Input */
+    #chat-input {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+        #chat-input textarea {
+            width: 100%;
+            resize: none;
+            height: 50px;
+            border: none;
+            padding: 5px;
+        }
+
+    #actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 5px;
+    }
+
+        #actions span {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #actions button {
+            background: darkgreen;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+</style>
+
+<!-- Chat Icon -->
+<div id="chat-icon" title="Chat with GPT">
+    <img src="~/Content/Clients/dist/img/chip.png" alt="GPT Icon" />
+</div>
+
+<!-- Chat Box -->
+<div id="chat-box" style="display: none;">
+    <div id="chat-header">
+        <img src="~/Content/Clients/dist/img/chip.png" alt="Agent Avatar" />
+        <div>
+            <strong>Chip</strong>
+            <p>Chip is always here to support you</p>
+        </div>
+        <span id="close-chat">×</span>
+    </div>
+
+    <div id="chat-content">
+
+    </div>
+
+    <form id="chat-form">
+        <div id="chat-input">
+            <textarea placeholder="Enter your message..." id="userInput" required></textarea>
+            <div id="actions">
+                <span>😊</span>
+                <span>📎</span>
+                <span>🎤</span>
+                <button type="submit">➤</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    const chatIcon = document.getElementById("chat-icon");
+    const chatBox = document.getElementById("chat-box");
+    const closeChat = document.getElementById("close-chat");
+
+    // Khi bấm icon => bật hoặc tắt nếu đang mở
+    chatIcon.addEventListener("click", () => {
+        if (chatBox.style.display === "none" || chatBox.style.display === "") {
+            chatBox.style.display = "flex";
+        } else {
+            chatBox.style.display = "none";
+        }
+    });
+
+    // Khi bấm dấu X => đóng
+    closeChat.addEventListener("click", () => {
+        chatBox.style.display = "none";
+    });
+
+    document.getElementById("chat-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const input = document.getElementById("userInput").value.trim();
+        if (!input) return;
+
+        const content = document.getElementById("chat-content");
+
+        // Thêm tin nhắn người dùng
+        const userMsg = document.createElement("div");
+        userMsg.className = "msg user";
+        userMsg.innerText = input;
+        content.appendChild(userMsg);
+
+        // Hiện tạm phản hồi "Chip is thinking..."
+        const botMsg = document.createElement("div");
+        botMsg.className = "msg bot";
+        botMsg.innerText = "Chip is thinking...";
+        content.appendChild(botMsg);
+
+        // Scroll xuống cuối
+        content.scrollTop = content.scrollHeight;
+
+        // Gọi server
+        fetch("/Home/AskChatGpt", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `userInput=${encodeURIComponent(input)}`
+        })
+            .then(res => res.json())
+            .then(data => {
+                botMsg.innerText = data.response;
+                content.scrollTop = content.scrollHeight;
+            })
+            .catch(error => {
+                botMsg.innerText = "❌ Lỗi khi gọi GPT.";
+                console.error("GPT error:", error);
+            });
+
+        // Reset input
+        document.getElementById("userInput").value = "";
+    });
+</script>
+
+

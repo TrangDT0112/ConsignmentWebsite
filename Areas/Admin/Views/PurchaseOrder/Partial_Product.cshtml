@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ConsignmentWebsite.Models.EF.Order_Details>
+
+@if (Model != null && Model.Any())
+{
+    int i = 1;
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Product name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@item.Product.Title</td>
+                    <td>@ConsignmentWebsite.Common.Common.FormatNumber(item.Price, 0)</td>
+                    <td>@item.Quantity</td>
+                    <td>@ConsignmentWebsite.Common.Common.FormatNumber((item.Price * item.Quantity),0)</td>
+                </tr>
+                i++;
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,39 @@
+﻿@model IEnumerable<ConsignmentWebsite.Models.EF.Brand>
+@if (Model != null && Model.Any())
+{
+<div class="row">
+    <div class="col-md-12">
+        <div class="product_slider-container">
+            <div class="owl-carousel owl-theme product_slider">
+                @foreach (var item in Model)
+                {
+
+                    <!-- Slide 1 -->
+
+                    <div class="owl-item product_slider_item" style=" width: 180px;">
+                        <div class="product">
+                            <div class="product discount">
+                                <div class="product_image">
+                                    <img src="@item.Image" alt="@item.BrandName">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+                <!-- Slider Navigation -->
+
+                <div class="product_slider_nav_left product_slider_nav d-flex align-items-center justify-content-center flex-column">
+                    <i class="fa fa-chevron-left" aria-hidden="true" style="color: darkslategrey;"></i>
+                </div>
+                <div class="product_slider_nav_right product_slider_nav d-flex align-items-center justify-content-center flex-column">
+                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+                   
+}

@@ -1,0 +1,174 @@
+﻿<!-- Sidebar -->
+<div class="sidebar " style="background-color: #213616;">
+    <!-- Sidebar user (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+            <img src="~/Content/Clients/dist/img/ava.jpg" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+            <a href="#" class="d-block">Do Thu Trang</a>
+        </div>
+    </div>
+
+    <!-- SidebarSearch Form -->
+    @*<div class="form-inline">
+            <div class="input-group" data-widget="sidebar-search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" style="background: #e4f5dc;">
+                <div class="input-group-append">
+                    <button class="btn btn-sidebar" style="background: #e4f5dc;">
+                        <i class="fas fa-search fa-fw" style="color: lightslategray;"></i>
+                    </button>
+                </div>
+            </div>
+        </div>*@
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+    with font-awesome or any other icon font library -->
+            <li class="nav-item">
+                <a href="/Admin/Category" class="nav-link">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                        Category
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/Role" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        Role
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/News" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        News
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/Posts" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        Post
+                        @*<span class="right badge badge-danger">New</span>*@
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/ManageOrder" class="nav-link">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                        Manage Order
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="/admin/ConsignmentOrder" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Consignment Orders</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Admin/PurchaseOrder" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Purchase Order</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/Advertisement" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        Advertisement
+                        @*<span class="right badge badge-danger">New</span>*@
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/Statistic" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        Statistic
+                        @*<span class="right badge badge-danger">New</span>*@
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/ManageProduct" class="nav-link">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                        Manage Product
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="/Admin/ProductCategory" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Product Category</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Admin/BrandPreferred" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Brand</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Admin/Products" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Product</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/SettingSystem" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        System configuration
+                        @*<span class="right badge badge-danger">New</span>*@
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/account" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        Account
+                        @*<span class="right badge badge-danger">New</span>*@
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="javascript:document.getElementById('logOffForm').submit()" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        Log out
+                        @*<span class="right badge badge-danger">New</span>*@
+                    </p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+</div>
+<!-- /.sidebar -->
+@if (Request.IsAuthenticated)
+{
+<div style="display:none;">
+    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @id = "logOffForm" }))
+    {
+        @Html.AntiForgeryToken()
+
+    }
+</div>    
+}

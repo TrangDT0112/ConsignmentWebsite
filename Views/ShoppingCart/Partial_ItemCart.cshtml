@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ConsignmentWebsite.Models.ShoppingCartItem>
+@using ConsignmentWebsite.Common
+
+<table class="table">
+    <tr class="text-center">
+        <th>No</th>
+        <th>Image</th>
+        <th>Product name</th>
+        <th>Price</th>
+        <th style="width:100px;">Quantity</th>
+        <th>Total Price</th>
+        <th style="width: 200px;"></th>
+    </tr>
+    @if (Model != null && Model.Any())
+    {
+        var i = 0;
+        var TotalPrice = decimal.Zero;
+        foreach (var item in Model)
+        {
+            TotalPrice += item.TotalPrice;
+            <tr class="text-center" id="trow_@item.ProductId">
+                <td>@(i+1)</td>
+                <td><img src="@item.ProductImg" width="60" /></td>
+                <td><a style="color:black;" href="/detail/@item.ProductName/@item.ProductId">@item.ProductName</a></td>
+                <td>@ConsignmentWebsite.Common.Common.FormatNumber(item.Price, 0)</td>
+                <td><input type="number" value="@item.Quantity" class="form-control" id="Quantity_@item.ProductId"></td>
+                <th>@ConsignmentWebsite.Common.Common.FormatNumber(item.TotalPrice, 0)</th>
+                <td>
+                    <a href="#" data-id="@item.ProductId" class="btn btn-sm btn-danger btnDelete">Delete</a>
+                    <a href="#" data-id="@item.ProductId" class="btn btn-sm btn-success btnUpdate">Update</a>
+                </td>
+            </tr>
+            i++;
+        }
+        <tr>
+            <th colspan="6" class="text-right"> Total: </th>
+            <th>@Common.FormatNumber(TotalPrice, 0)</th>
+            <th></th>
+
+        </tr>
+
+    }
+    else
+    {
+        <tr>
+            <td colspan="6" class="text-center text-danger">⚠ Cart is empty!</td>
+        </tr>
+    }
+
+</table>

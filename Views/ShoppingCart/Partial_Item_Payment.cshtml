@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ConsignmentWebsite.Models.ShoppingCartItem>
+    @using ConsignmentWebsite.Common
+
+@if (Model != null && Model.Any())
+{
+    <h2>SHOPPING CART<span style="float: right; position: relative;"><small>@Model.Count()</small></span></h2>
+    var i = 0;
+    var TotalPrice = decimal.Zero;
+<div style="border:solid 1px lightgreen;">
+    <table class="table">
+        @foreach (var item in Model)
+        {
+            TotalPrice += item.TotalPrice;
+            <tr>
+                <td>@item.ProductName</td>
+                <td>@Common.FormatNumber(item.Price,0)</td>
+            </tr>
+        }
+        <tr>
+            <td>Total price</td>
+            <td>@Common.FormatNumber(TotalPrice,0)</td>
+        </tr>
+    </table>
+</div>
+    
+}
+else
+{
+
+
+}
