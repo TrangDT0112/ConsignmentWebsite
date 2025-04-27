@@ -85,8 +85,8 @@ namespace ConsignmentWebsite
                defaults: new { controller = "Products", action = "Index", alias = UrlParameter.Optional },
                namespaces: new[] { "ConsignmentWebsite.Controllers" }
            );
-        
-        routes.MapRoute(
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },

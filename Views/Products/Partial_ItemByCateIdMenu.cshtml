@@ -52,15 +52,36 @@
                     <h6 class="product_name"><a href="/Detail/@item.Title/@item.Id">@item.Title</a></h6>
                     @if (item.PriceSale > 0)
                     {
-                <div class="product_price">@ConsignmentWebsite.Common.Common.FormatNumber(item.PriceSale, 0)</div>
+                        <div class="product_price">@ConsignmentWebsite.Common.Common.FormatNumber(item.PriceSale, 0)</div>
                     }
                     else
                     {
-                <div class="product_price">@ConsignmentWebsite.Common.Common.FormatNumber(item.Price, 0)<span>@ConsignmentWebsite.Common.Common.FormatNumber(item.OriginalPrice, 0)</span></div>
+                        <div class="product_price">@ConsignmentWebsite.Common.Common.FormatNumber(item.Price, 0)<span>@ConsignmentWebsite.Common.Common.FormatNumber(item.OriginalPrice, 0)</span></div>
                     }
                 </div>
             </div>
-            <div class="red_button add_to_cart_button"><a href="#" class="btnAddToCart" data-id="@item.Id">Add to cart</a></div>
+            <div class="red_button add_to_cart_button"><a href="/Collection" class="btnAddToCart" data-id="@item.Id">Add to cart</a></div>
         </div>
     }
 }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".btnAddToCart").click(function (e) {
+            e.preventDefault();
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '/ShoppingCart/AddToCart',
+                type: 'POST',
+                data: { id: id, quantity: 1 },
+                success: function (response) {
+                    window.location.href = '/Collection';
+                },
+                error: function () {
+                    alert("An error occurred while adding to cart!!");
+                }
+            });
+        });
+    });
+</script>

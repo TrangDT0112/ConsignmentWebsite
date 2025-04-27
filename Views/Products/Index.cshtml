@@ -41,10 +41,10 @@
                     <div id="slider-range"></div>
                     <div class="filter_button"><span>filter</span></div>
                     <hr />
-                    @Html.Action("Refresh","Home")
+                    @Html.Action("Refresh", "Home")
                 </div>
 
-                
+
             </div>
 
             <!-- Main Content -->
@@ -127,14 +127,14 @@
                                                     <h6 class="product_name"><a href="/Detail/@item.Title/@item.Id">@item.Title</a></h6>
                                                     @if (item.PriceSale > 0)
                                                     {
-                                                <div class="product_price">@ConsignmentWebsite.Common.Common.FormatNumber(item.OriginalPrice, 0)<span>@ConsignmentWebsite.Common.Common.FormatNumber(item.Price, 0)</span></div>
+                                                        <div class="product_price">@ConsignmentWebsite.Common.Common.FormatNumber(item.OriginalPrice, 0)<span>@ConsignmentWebsite.Common.Common.FormatNumber(item.Price, 0)</span></div>
 
-                                                <div style="display:none;" class="in_product_price"> @ConsignmentWebsite.Common.Common.FormatNumber(item.PriceSale, 0)</div>
+                                                        <div style="display:none;" class="in_product_price"> @ConsignmentWebsite.Common.Common.FormatNumber(item.PriceSale, 0)</div>
                                                     }
                                                     else
                                                     {
-                                                <div class="product_price">@ConsignmentWebsite.Common.Common.FormatNumber(item.Price, 0)</div>
-                                                <div style="display:none;" class="in_product_price">@ConsignmentWebsite.Common.Common.FormatNumber(item.Price, 0)</div>
+                                                        <div class="product_price">@ConsignmentWebsite.Common.Common.FormatNumber(item.Price, 0)</div>
+                                                        <div style="display:none;" class="in_product_price">@ConsignmentWebsite.Common.Common.FormatNumber(item.Price, 0)</div>
                                                     }
                                                 </div>
                                             </div>
@@ -185,5 +185,6 @@
     </div>
 </div>
 @section scripts{
-<script src="~/Content/assets/js/categories_custom.js"></script>
+    <script src="~/Content/assets/js/categories_custom.js"></script>
+    <script src="~/Scripts/jsShopping.js"></script>
 }
