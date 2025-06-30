@@ -1,6 +1,5 @@
 ﻿@model ConsignmentWebsite.Models.OrderViewModel
 
-
 @using (Ajax.BeginForm("CheckOut", "ShoppingCart", new AjaxOptions
 {
     HttpMethod = "POST",
@@ -10,34 +9,126 @@
     OnBegin = "OnBeginCO"
 }, new { @id = "myCheckOutForm" }))
 {
-    
     @Html.AntiForgeryToken()
+
+    <script>
+        function OnBeginCO() {
+            $('#btnCheckOut').attr("disabled", "disabled");
+            $('#load_send').html('<h4>Sending...</h4>');
+        }
+
+        function OnSuccessCO(res) {
+            if (res.Success) {
+                if (res.Code === 1) {
+                    window.location.href = "/ShoppingCart/CheckOutSuccess?orderCode=" + res.Url;
+                } else {
+                    window.location.href = res.Url;
+                }
+            } else {
+                alert("Đặt hàng thất bại. Vui lòng kiểm tra lại.");
+            }
+        }
+
+        $("#myCheckOutForm").submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/ShoppingCart/CheckOut',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    if (result.Success) {
+                        if (result.Code === 1) {
+                            window.location.href = "/ShoppingCart/CheckOutSuccess?orderCode=" + result.Url;
+                        } else {
+                            window.location.href = result.Url;
+                        }
+                    } else {
+                        alert("Đặt hàng thất bại. Vui lòng thử lại.");
+                    }
+                },
+                error: function () {
+                    alert("Có lỗi xảy ra khi gửi yêu cầu.");
+                }
+            });
+        });
+    </script>
+
     <h2>Customer Information</h2>
-    <div class="form-group">
-        <label>Customer's full name</label>
-        <input type="text" name="CustomerName" required class="form-control" autocomplete="off" />
-    </div>
-    <div class="form-group">
-        <label>Phone</label>
-        <input type="text" name="Phone" class="form-control" autocomplete="off" />
-    </div>
-    <div class="form-group">
-        <label>Address</label>
-        <input type="text" name="Address" class="form-control" autocomplete="off" />
-    </div>
-    <div class="form-group">
-        <label>Email</label>
-        <input type="text" name="Email" class="form-control" autocomplete="off" />
-    </div>
+
+    if (!Request.IsAuthenticated)
+    {
+        <div class="form-group">
+            <label>Customer's full name</label>
+            <input type="text" name="CustomerName" required class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label>Phone</label>
+            <input type="text" name="Phone" required class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <input type="text" name="Address" required class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="Email" required class="form-control" autocomplete="off" />
+        </div>
+    }
+    else
+    {
+        var user = (ConsignmentWebsite.Models.ApplicationUser)ViewBag.User;
+        <div class="form-group">
+            <label>Customer's full name</label>
+            <input type="text" name="CustomerName" value="@user.Fullname" class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label>Phone</label>
+            <input type="text" name="Phone" value="@user.Phone" class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <input type="text" name="Address" class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="Email" value="@user.Email" class="form-control" autocomplete="off" />
+        </div>
+    }
+
     <div class="form-group">
         <label>Payment method</label>
-        <select class="form-control" name="PaymentMethod">
+        <select class="form-control" name="TypePayment" id="drTypePayment">
             <option value="1" selected>COD</option>
-            <option value="2">ATM Banking</option>
+            <option value="2">ATM Banking (VNPAY)</option>
         </select>
     </div>
+
+    <div class="form-group" id="load_form_payment" style="display:none;">
+        <h4>Choose payment method via VNPAY:</h4>
+        <label><input type="radio" name="TypePaymentVN" value="0" checked /> VNPAYQR payment gateway</label><br />
+        <label><input type="radio" name="TypePaymentVN" value="1" /> Via VNPAYQR supported apps</label><br />
+        <label><input type="radio" name="TypePaymentVN" value="2" /> ATM - Domestic bank account</label><br />
+        <label><input type="radio" name="TypePaymentVN" value="3" /> International card</label>
+    </div>
+
+    <div class="form-group" id="load_send"></div>
+
     <div class="form-group">
-        <button type="submit" class="btn btn-block btn-success" id="btnCheckOut">Order</button>
+        <button type="submit" class="btn btn-success btn-block" id="btnCheckOut">Order</button>
     </div>
 }
 
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#drTypePayment').change(function () {
+                if ($(this).val() == "2") {
+                    $('#load_form_payment').show();
+                } else {
+                    $('#load_form_payment').hide();
+                }
+            });
+        });
+    </script>
+}

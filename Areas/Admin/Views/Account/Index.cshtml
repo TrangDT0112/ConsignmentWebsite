@@ -48,7 +48,7 @@
                         var i = 1;
                         foreach (var item in Model)
                         {
-                            <tr>
+                            <tr id="trow_@item.Id">
                                 <td>@i</td>
                                 <td>@item.UserName</td>
                                 <td>@item.FullName</td>
@@ -56,7 +56,7 @@
                                 <td>@item.Email</td>
                                 <td>
                                     <a href="/Admin/Account/Edit/@item.Id" class="btn btn-sm btn-primary">Edit</a>
-                                    <a href="#" data-user="@item.Email" class="btn btn-sm btn-danger btnDelete">Delete</a>
+                                    <a href="#" data-user="@item.UserName" data-id="@item.Id" class="btn btn-sm btn-danger btnDelete">Delete</a>
                                 </td>
                             </tr>
                             i++;
@@ -79,3 +79,23 @@
 
 </section>
 <!-- /.content -->
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('.btnDelete').click(function () {
+                var user = $(this).data('user');
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '/Admin/Account/Delete',
+                    type: 'POST',
+                    data: { user: user, id: id },
+                    success: function (res) {
+                        if (res.Success) {
+                            $('#trow_' + id).remove();
+                        }
+                    }
+                });
+             });
+        });
+    </script>
+    }

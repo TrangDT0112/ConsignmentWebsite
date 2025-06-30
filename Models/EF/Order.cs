@@ -30,6 +30,10 @@ namespace ConsignmentWebsite.Models.EF
         public int Quantity { get; set; }
         public int TypePayment { get; set; }
         public int Status { get; set; }
+        public string CustomerId { get; set; }
+        public string PaymentStatus { get; set; }
+        public int ShippingStatus { get; set; }
+
         public virtual ICollection<Order_Details> Order_Details { get; set; }
         public virtual ICollection<ProductImage> ProductImages { get; set; }
     }

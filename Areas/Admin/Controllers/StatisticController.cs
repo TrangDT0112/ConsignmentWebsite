@@ -30,10 +30,10 @@ namespace ConsignmentWebsite.Areas.Admin.Controllers
                             Quantity = od.Quantity,
                             SellPrice = od.Price,
                             OriginalPrice = p.OriginalPrice,
-                            BrandId = p.BrandId // Lấy thêm BrandId
+                            BrandId = p.BrandId 
                         };
 
-            // Lọc theo ngày
+            //Filter by date
             if (!string.IsNullOrEmpty(fromDate))
             {
                 DateTime startDate = DateTime.ParseExact(fromDate, "dd/MM/yyyy", null);

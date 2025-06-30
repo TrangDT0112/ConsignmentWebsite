@@ -1,0 +1,60 @@
+﻿@model ConsignmentWebsite.Models.EF.ReviewProduct
+
+<div class="add_review">
+    @using (Ajax.BeginForm("PostReview", "Review", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        UpdateTargetId = "load_review",
+        OnComplete = "OnSuccessRE",
+        OnFailure = "OnFailureRE",
+        OnBegin = "OnBeginRE"
+    }, new { @id = "myForm" }))
+    {
+        <script>
+    function OnBeginCO() {
+        $('#btnCheckOut').attr("disabled", "disabled");
+        $('#load_send').html('<h2>Sending....</h2>');
+    }
+    function OnSuccessCO(res) {
+        if (res.Success) {
+            //if (res.Code == 1) {
+            //    location.href = "/ShoppingCart/CheckOutSuccess";
+            //}
+            //else {
+            //    location.href = res.Url;
+            //}
+        }
+    }
+            //function OnFailure() {
+
+            //}
+        </script>
+
+        @Html.AntiForgeryToken()
+        @*<form id="review_form" action="post">*@
+<div>
+    <h1>Add Review</h1>
+    @Html.TextBoxFor(x => x.FullName, new { @class = "form_input input_name", @placeholder = "Name*", @id = "review_name" })
+    @Html.TextBoxFor(x => x.Email, new { @class = "form_input input_email", @placeholder = "Email*", @id = "review_email" })
+    @Html.HiddenFor(x => x.UserName)
+    @Html.HiddenFor(x => x.productId, new {@value = ViewBag.ProductId})
+    <input type="text" id="txtRate" name="Rate" value="4" style="visibility:hidden;"/>
+</div>
+        <div>
+            <h1>Your Rating:</h1>
+            <ul class="user_star_rating">
+                <li><i class="fa fa-star" aria-hidden="true"></i></li>
+                <li><i class="fa fa-star" aria-hidden="true"></i></li>
+                <li><i class="fa fa-star" aria-hidden="true"></i></li>
+                <li><i class="fa fa-star" aria-hidden="true"></i></li>
+                <li><i class="fa fa-star-o" aria-hidden="true"></i></li>
+            </ul>
+            @Html.TextAreaFor(x=>x.Content, new {@class= "input_review", @rows="4", @placeholder ="Your Review*", @id = "review_message" })
+        </div>
+        <div class="text-left text-sm-right">
+            <button id="review_submit" type="submit" class="red_button review_submit_btn trans_300" value="Submit">submit</button>
+        </div>
+        @*</form>*@
+    }
+    </div>
+  

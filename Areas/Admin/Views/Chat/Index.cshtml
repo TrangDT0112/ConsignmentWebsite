@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<li class="nav-item dropdown">
+    <a class="nav-link" data-toggle="dropdown" href="#">
+        <i class="far fa-comments"></i>
+        <span id="message-badge" class="badge badge-danger navbar-badge">0</span>
+    </a>
+    <div id="message-dropdown" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-width: fit-content;">
+        <span class="dropdown-item dropdown-header">Loading messages...</span>
+    </div>
+</li>
+
+<style>
+    .dropdown-message-text {
+        max-height: 2.8em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        white-space: normal;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.get('/Admin/Chat/GetRecentMessages', function (data) {
+            let html = '';
+
+            if (data.length === 0) {
+                html = '<span class="dropdown-item dropdown-header">No new messages</span>';
+            } else {
+                $('#message-badge').text(data.length);
+
+                data.forEach(m => {
+                    html += `
+                        <a href="/Admin/Chat/ChatView" class="dropdown-item">
+                            <div class="media">
+                                <img src="${m.Avatar}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        ${m.Sender}
+                                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm dropdown-message-text">${m.Message}</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> ${m.Time}</p>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>`;
+                });
+
+                html += `<a href="/Admin/Chat/ChatView" class="dropdown-item dropdown-footer">See all</a>`;
+            }
+
+            $('#message-dropdown').html(html);
+        });
+    });
+</script>

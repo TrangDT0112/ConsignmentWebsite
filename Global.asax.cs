@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Microsoft.AspNet.SignalR;
+
 
 namespace ConsignmentWebsite
 {
@@ -57,5 +59,7 @@ namespace ConsignmentWebsite
             Application["visitors_online"] = Convert.ToUInt32(Application["visitors_online"]) - 1;
             Application.UnLock();
         }
+        
+
     }
 }

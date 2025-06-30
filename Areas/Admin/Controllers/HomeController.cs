@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ConsignmentWebsite.Models.EF;
+using ConsignmentWebsite.Models;
 
 namespace ConsignmentWebsite.Areas.Admin.Controllers
 {
@@ -14,5 +16,6 @@ namespace ConsignmentWebsite.Areas.Admin.Controllers
         {
             return View();
         }
+        
     }
 }

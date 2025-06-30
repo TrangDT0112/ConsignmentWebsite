@@ -31,7 +31,8 @@ namespace ConsignmentWebsite.Controllers
                 db.Entry(items).Property(x => x.ViewCount).IsModified = true;
                 db.SaveChanges();
             }
-                
+            var countReview = db.ReviewProducts.Where(x => x.productId == id).Count();
+            ViewBag.CountReview = countReview;
             return View(items);
         }
         public ActionResult ProductCategory(string title ,int? id)

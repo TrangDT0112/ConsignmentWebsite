@@ -1,0 +1,23 @@
+﻿@model IEnumerable<ConsignmentWebsite.Models.EF.Order>
+@if (Model != null)
+{
+    var i = 1;
+<h2 style="display: flex; justify-content: center; color: darkgreen; font-weight: bold; font-size: 20px; ">Order History</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>No</td>
+                            <td>Order code</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+        <tr>
+            <td>@i</td>
+            <td>@item.Code</td>
+        </tr>i++;
+                        }
+                    </tbody>
+                </table>}
+

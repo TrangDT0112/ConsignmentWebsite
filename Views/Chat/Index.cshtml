@@ -1,0 +1,264 @@
+﻿@{
+    ViewBag.Title = "Chatbox";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    #chat-icons {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        background-color: lightgreen;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    #chatbox {
+        position: fixed;
+        bottom: 90px;
+        right: 70px;
+        width: 300px;
+        height: 400px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 999;
+        font-family: Arial, sans-serif;
+        display: none;
+    }
+
+    #chat-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: darkgreen;
+        color: white;
+        padding: 15px;
+        position: relative;
+    }
+
+        #chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        #chat-header p {
+            font-size: 12px;
+            margin: 0;
+        }
+
+    #closeChat {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    #chatContent {
+        padding: 15px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    #chatForm {
+        border-top: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+
+    .msg {
+        max-width: 80%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 18px;
+        line-height: 1.4;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user {
+        background: darkgreen;
+        color: white;
+        align-self: flex-start;
+        margin-right: auto;
+    }
+
+    .admin,
+    .bot {
+        background: #f1f1f1;
+        color: #333;
+        align-self: flex-end;
+        margin-left: auto;
+    }
+
+    #newMessageCount {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        padding: 5px;
+        border-radius: 50%;
+        display: none;
+        z-index: 1100;
+    }
+</style>
+
+<!-- Chat Icon -->
+<div id="chat-icons" title="Chat with Customer Service">
+    <i class="fas fa-comments" style="font-size:30px; color:white;"></i>
+    <div id="newMessageCount"></div> <!-- Number of new messages -->
+</div>
+
+<!-- Chat Box -->
+<div id="chatbox">
+    <div id="chat-header">
+        <i class="fas fa-comments" style="font-size:30px; color:white;"></i>
+        <div>
+            <strong>Customer Service</strong>
+            <p>We will respond soon!</p>
+        </div>
+        <span id="closeChat">×</span>
+    </div>
+
+    <div id="chatContent"></div>
+
+    <form id="chatForm">
+        <div id="chatInput" style="display: flex;">
+            <textarea placeholder="Enter your message..." id="userInput" required></textarea>
+            <div id="actions">
+                <button type="submit">➤</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script>
+    // Mở chat box
+    document.getElementById('chat-icons').addEventListener('click', function () {
+        var chatBox = document.getElementById('chatbox');
+        if (chatBox.style.display === 'none' || chatBox.style.display === '') {
+            chatBox.style.display = 'flex';
+            loadChatMessages();
+        }
+        document.getElementById('chat-icons').style.backgroundColor = 'lightgreen';
+        document.getElementById('newMessageCount').style.display = 'none';
+    });
+
+    // Đóng chat box
+    document.getElementById('closeChat').addEventListener('click', function () {
+        document.getElementById('chatbox').style.display = 'none';
+    });
+
+    // Gửi tin nhắn
+    document.getElementById('chatForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var userMessage = document.getElementById('userInput').value;
+        if (userMessage.trim() !== '') {
+            $.ajax({
+                type: 'POST',
+                url: '/Chat/SendMessage',
+                data: { message: userMessage },
+                success: function (response) {
+                    if (response.success) {
+                        var chatContent = document.getElementById('chatContent');
+
+                        var userMsg = document.createElement('div');
+                        userMsg.classList.add('msg', 'user');
+                        userMsg.textContent = userMessage;
+                        chatContent.appendChild(userMsg);
+
+                        var botReply = document.createElement('div');
+                        botReply.classList.add('msg', 'admin');
+                        botReply.textContent = response.reply;
+                        chatContent.appendChild(botReply);
+
+                        document.getElementById('userInput').value = '';
+                        chatContent.scrollTop = chatContent.scrollHeight;
+                    } else {
+                        alert(response.message || 'Send failed!');
+                    }
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                    alert('Error sending message!');
+                }
+            });
+        }
+    });
+
+    // Tải tin nhắn
+    function loadChatMessages() {
+        $.ajax({
+            type: 'GET',
+            url: '/Chat/GetMessages',
+            success: function (response) {
+                if (response.error) {
+                    alert(response.error);
+                } else {
+                    var chatContent = document.getElementById('chatContent');
+                    chatContent.innerHTML = '';
+
+                    response.forEach(function (message) {
+                        var messageDiv = document.createElement('div');
+                        messageDiv.classList.add('msg');
+
+                        var sender = message.Sender.toLowerCase();
+                        if (sender === 'admin' || sender === 'employee') {
+                            messageDiv.classList.add('admin');
+                        } else {
+                            messageDiv.classList.add('user');
+                        }
+
+                        var messageTime = document.createElement('small');
+                        messageTime.textContent = message.Time;
+
+                        messageDiv.textContent = message.Message;
+                        messageDiv.appendChild(messageTime);
+
+                        chatContent.appendChild(messageDiv);
+                    });
+
+                    chatContent.scrollTop = chatContent.scrollHeight;
+                }
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+                alert('Error loading messages!');
+            }
+        });
+    }
+
+    // Kiểm tra phản hồi mới
+    function checkNewAdminReply() {
+        $.ajax({
+            type: 'GET',
+            url: '/Chat/CheckAdminReply',
+            success: function (response) {
+                if (response.hasReply) {
+                    document.getElementById('newMessageCount').style.display = 'block';
+                    document.getElementById('newMessageCount').textContent = 'New';
+                }
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+                alert('Error checking admin reply!');
+            }
+        });
+    }
+
+    checkNewAdminReply();
+</script>

@@ -14,6 +14,8 @@ namespace ConsignmentWebsite.Models.EF
         {
             this.ProductImage = new HashSet<ProductImage>();
             this.Order_Details = new HashSet<Order_Details>();
+            this.ReviewProduct = new HashSet<ReviewProduct>();
+            this.Wishlist = new HashSet<Wishlist>();
         }
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
@@ -60,5 +62,9 @@ namespace ConsignmentWebsite.Models.EF
         public virtual ConsignmentOrder ConsignmentOrder { get; set; }
         public virtual ICollection<ProductImage> ProductImage { get; set; }
         public virtual ICollection<Order_Details> Order_Details { get; set; }
+        public virtual ICollection<ReviewProduct> ReviewProduct { get; set; }
+        public virtual ICollection<Wishlist> Wishlist { get; set; }
+
+        
     }
 }

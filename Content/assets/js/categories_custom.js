@@ -1,6 +1,4 @@
-﻿/* JS Document */
-
-/******************************
+﻿/******************************
 
 [Table of Contents]
 
@@ -201,18 +199,44 @@ jQuery(document).ready(function($)
     				if(active)
     				{
     					fav.removeClass('active');
-    					active = false;
+						active = false;
+						/*DeletedWishlist(id);*/
     				}
     				else
     				{
     					fav.addClass('active');
-    					active = true;
+						active = true;
+						var id = $(this).data('id');
+						/*AddWishlist(id);*/
     				}
     			});
     		});
     	}
     }
-
+	function AddWishlist(id) {
+		$.ajax({
+			url: '/wishlist/postwishlist',
+			type: 'POST',
+			data: { ProductId: id },
+			success: function (res) {
+				if (res.Success == false) {
+					alert(res.Message);
+				}
+			}
+		});
+	}
+	function DeletedWishlist(id) {
+		$.ajax({
+			url: '/wishlist/PostDeleteWishlist',
+			type: 'POST',
+			data: { ProductId: id },
+			success: function (res) {
+				if (res.Success == false) {
+					alert(res.Message);
+				}
+			}
+		});
+	}
     /* 
 
 	5. Init Fix Product Border

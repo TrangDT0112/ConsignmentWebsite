@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ConsignmentWebsite.Models;
+using ConsignmentWebsite.Models.EF;
 
 namespace ConsignmentWebsite.Controllers
 {
@@ -15,6 +16,10 @@ namespace ConsignmentWebsite.Controllers
         {
             var item = db.Posts.FirstOrDefault(x => x.Title == title);
             return View(item);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
         }
     }
 }

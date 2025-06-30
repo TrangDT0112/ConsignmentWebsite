@@ -8,7 +8,7 @@
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <a href="/">
-                        <img class="d-block w-100 img-fluid" src="~/Content/Clients/dist/img/sale.png" />
+                        <img class="d-block w-100 img-fluid" src="~/Content/Clients/dist/img/woman's fashion.png" />
                     </a>
                 </div>
                 <div class="carousel-item">
@@ -247,10 +247,17 @@
             </div>
         </div>
     </section>
-    @Html.Action("AskChatGpt", "Home")
+        
+
+        @Html.Action("Index", "Chat")
+  
+        @Html.Action("AskTinyLlama", "Home")
+
+    
 
     @section scripts {
-        }
+
+    }
 </div>
 
 

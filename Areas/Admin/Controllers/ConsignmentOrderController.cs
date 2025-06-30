@@ -15,9 +15,7 @@ namespace ConsignmentWebsite.Areas.Admin.Controllers
         // GET: Admin/Default
         public ActionResult Index(int? page)
         {
-            var items = db.ConsignmentOrders
-                .OrderByDescending(x => x.CreatedDate)
-                .ToList();
+            var items = db.ConsignmentOrders.OrderByDescending(x => x.CreatedDate).ToList();
 
             foreach (var order in items)
             {
@@ -33,13 +31,12 @@ namespace ConsignmentWebsite.Areas.Admin.Controllers
                     }
                 }
 
+                // Gán lại và lưu
                 order.TotalAmount = totalPayout;
+                db.Entry(order).Property(x => x.TotalAmount).IsModified = true;
             }
 
-            if (page == null)
-            {
-                page = 1;
-            }
+            db.SaveChanges(); 
 
             var pageNumber = page ?? 1;
             var pageSize = 10;
@@ -47,6 +44,7 @@ namespace ConsignmentWebsite.Areas.Admin.Controllers
             ViewBag.Page = pageNumber;
             return View(items.ToPagedList(pageNumber, pageSize));
         }
+
 
         public ActionResult Create()
         {

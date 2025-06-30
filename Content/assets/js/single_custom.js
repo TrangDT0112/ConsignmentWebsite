@@ -242,7 +242,7 @@ jQuery(document).ready(function($)
 		if($('.user_star_rating li').length)
 		{
 			var stars = $('.user_star_rating li');
-
+			var cal = 0;
 			stars.each(function()
 			{
 				var star = $(this);
@@ -250,7 +250,7 @@ jQuery(document).ready(function($)
 				star.on('click', function()
 				{
 					var i = star.index();
-
+					cal = 0;
 					stars.find('i').each(function()
 					{
 						$(this).removeClass('fa-star');
@@ -260,7 +260,9 @@ jQuery(document).ready(function($)
 					{
 						$(stars[x]).find('i').removeClass('fa-star-o');
 						$(stars[x]).find('i').addClass('fa-star');
+						cal++;
 					};
+					$('#txtRate').val(cal);
 				});
 			});
 		}

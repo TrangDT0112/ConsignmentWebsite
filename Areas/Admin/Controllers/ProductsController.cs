@@ -32,7 +32,8 @@ namespace ConsignmentWebsite.Areas.Admin.Controllers
         public ActionResult Add()
         {
             ViewBag.ProductCategory = new SelectList(db.ProductCategories.ToList(), "Id", "Title");
-            ViewBag.ConsignmentOrder = new SelectList(db.ProductCategories.ToList(), "Id", "ConsignmentCode");
+            ViewBag.ConsignmentOrder = new SelectList(db.ConsignmentOrders.ToList(), "Id", "ConsignmentCode");
+
             var brandList = db.Brands
                               .Select(b => new SelectListItem
                               {

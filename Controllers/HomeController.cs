@@ -7,18 +7,18 @@ using ConsignmentWebsite.Services;
 using ConsignmentWebsite.Models;
 using ConsignmentWebsite.Models.EF;
 using System.Threading.Tasks;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Text;
+using System.Threading;
 
 namespace ConsignmentWebsite.Controllers
 {
-    [Authorize(Roles = "Customer")]
     public class HomeController : Controller
     {
-        private readonly AiChatService gpt = new AiChatService();
+        private TinyLlamaService _tinyLlamaService = new TinyLlamaService();
         private ApplicationDbContext db = new ApplicationDbContext();
-        public HomeController()
-        {
-            gpt = new AiChatService();
-        }
+
         public ActionResult Index()
         {
             return View();
@@ -52,27 +52,36 @@ namespace ConsignmentWebsite.Controllers
 
             return View();
         }
-        public ActionResult AskChatGpt()
+        public HomeController()
         {
-            return View(gpt);
+            _tinyLlamaService = new TinyLlamaService(); // Cần inject service này nếu sử dụng DI
         }
         [HttpPost]
-        public async Task<JsonResult> AskChatGpt(string userInput)
+        public async Task<ActionResult> AskTinyLlama(string userPrompt)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(userInput))
+                var response = await _tinyLlamaService.GetResponseAsync(userPrompt);
+                if (string.IsNullOrEmpty(response))
                 {
-                    return Json(new { response = "❌ Missing user input!" });
+                    return Json(new { response = "❌ No valid response from Chip." });
                 }
 
-                var response = await gpt.AskChatGptAsync(userInput);
                 return Json(new { response });
             }
-            catch (System.Exception ex)
+            catch (HttpRequestException httpEx)
             {
-                return Json(new { response = $"❌ Server error: {ex.Message}" });
+                return Json(new { response = $"❌ HTTP error: {httpEx.Message}" });
             }
+            catch (Exception ex)
+            {
+                return Json(new { response = $"❌ Internal server error: {ex.Message}" });
+            }
+        }
+
+        public ActionResult AskTinyLlama()
+        {
+            return PartialView();
         }
 
     }

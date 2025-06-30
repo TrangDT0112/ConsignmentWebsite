@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Web;
+using System.Web.Hosting;
 
 namespace ConsignmentWebsite.Common
 {
@@ -14,43 +16,73 @@ namespace ConsignmentWebsite.Common
 
         private static string password = ConfigurationManager.AppSettings["PasswordEmail"];
         private static string Email = ConfigurationManager.AppSettings["Email"];
-        public static bool SendMail(string name, string subject, string content,
-            string toMail)
+
+        private static void LogSmtp(string message)
         {
-            bool rs = false;
             try
             {
-                MailMessage message = new MailMessage();
-                var smtp = new SmtpClient();
-                {
-                    smtp.Host = "smtp.gmail.com"; //host name
-                    smtp.Port = 587; //port number
-                    smtp.EnableSsl = true; //whether your smtp server requires SSL
-                    smtp.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+                string logFilePath = @"D:\smtp_log.txt"; 
+                string logDir = Path.GetDirectoryName(logFilePath);
 
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = new NetworkCredential()
-                    {
-                        UserName = Email,
-                        Password = password
-                    };
+                
+                if (!Directory.Exists(logDir))
+                {
+                    Directory.CreateDirectory(logDir);
                 }
-                MailAddress fromAddress = new MailAddress(Email, name);
-                message.From = fromAddress;
-                message.To.Add(toMail);
-                message.Subject = subject;
-                message.IsBodyHtml = true;
-                message.Body = content;
-                smtp.Send(message);
-                rs = true;
+
+                using (StreamWriter writer = new StreamWriter(logFilePath, true))
+                {
+                    writer.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                rs = false;
+                System.Diagnostics.Debug.WriteLine("LogSmtp failed: " + ex.Message);
             }
-            return rs;
         }
+        public static bool SendMail(string fromEmail, string toEmail, string subject, string body)
+        {
+            LogSmtp("=== SendMail START ===");
+
+            try
+            {
+                MailMessage mail = new MailMessage
+                {
+                    From = new MailAddress(fromEmail, "CiaraCycleFashion"),
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true
+                };
+                mail.To.Add(toEmail);
+
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
+                {
+                    EnableSsl = true,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromEmail, password)
+                };
+
+                LogSmtp($"Sending email from {fromEmail} to {toEmail}");
+                smtp.Send(mail);
+                LogSmtp("SendMail SUCCESS");
+
+                return true;
+            }
+            catch (SmtpException smtpEx)
+            {
+                LogSmtp("SMTP EXCEPTION: " + smtpEx.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogSmtp("GENERAL EXCEPTION: " + ex.ToString());
+            }
+
+            return false;
+        }
+
+
+
+
         public static string FormatNumber(object value, int SoSauDauPhay = 2)
         {
             bool isNumber = IsNumeric(value);
@@ -85,5 +117,52 @@ namespace ConsignmentWebsite.Common
                        || value is double
                        || value is decimal;
         }
+        public static string HtmlRate(int rate)
+        {
+            var str = "";
+            if(rate == 1)
+            {
+                str = @"<li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star-o' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star-o' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star-o' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star-o' aria-hidden='true'></i></li>";
+            }
+            if (rate == 2)
+            {
+                str = @"<li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star-o' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star-o' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star-o' aria-hidden='true'></i></li>";
+            }
+            if (rate == 3)
+            {
+                str = @"<li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star-o' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star-o' aria-hidden='true'></i></li>";
+            }
+            if (rate == 4)
+            {
+                str = @"<li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star-o' aria-hidden='true'></i></li>";
+            }
+            if (rate == 5)
+            {
+                str = @"<li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star' aria-hidden='true'></i></li>
+                       <li><i class='fa fa-star' aria-hidden='true'></i></li>";
+            }
+            return str;
+        }
+
+        
     }
 }

@@ -81,7 +81,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Consignment Code</label>
-                                            @Html.DropDownListFor(x => x.ConsignmentOrderId, ViewBag.ConsignmentOrder as SelectList, "- Choose consignment code -", new { @class = "form-control" })
+                                            @Html.DropDownListFor(x => x.ConsignmentOrderId, ViewBag.ConsignmentOrder as IEnumerable<SelectListItem>, "- Choose consignment code -", new { @class = "form-control" })
                                             @Html.ValidationMessageFor(x => x.ConsignmentOrderId, null, new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group">

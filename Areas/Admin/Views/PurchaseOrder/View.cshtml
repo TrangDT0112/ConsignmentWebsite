@@ -74,7 +74,10 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Status</label>
-                        <p class="form-control">@(Model.TypePayment == 1 ? "Waiting for payment" : "Paid" )</p>
+                        <p class="form-control">
+                            @(Model.Status == 1 ? "Waiting for payment" : Model.Status == 2 ? "Paid" : "Pending")
+                        </p>
+
                     </div>
                 </div>
                 <div class="col-md-6">

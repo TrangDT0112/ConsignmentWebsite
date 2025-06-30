@@ -10,6 +10,8 @@ namespace ConsignmentWebsite.Models.EF
     [Table("tb_SettingSystem")]
     public class SettingSystem
     {
+        public event EventHandler Event;
+
         [Key]
         [StringLength(50)]
         public string SettingKey { get; set; }

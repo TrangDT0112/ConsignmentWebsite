@@ -1,0 +1,73 @@
+﻿<li class="nav-item dropdown" id="notificationDropdown">
+    <a class="nav-link" data-toggle="dropdown" href="#">
+        <i class="far fa-bell"></i>
+        <span class="badge badge-warning navbar-badge" id="notificationCount">0</span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        <span class="dropdown-item dropdown-header" id="notificationHeader">0 Notifications</span>
+        <div class="dropdown-divider"></div>
+
+        <a href="/Admin/Chat" class="dropdown-item">
+            <i class="fas fa-envelope mr-2"></i>
+            <span id="messageCount">0 new messages</span>
+            <span class="float-right text-muted text-sm" id="lastMessageTime">Just now</span>
+        </a>
+        <div class="dropdown-divider"></div>
+
+        <a href="/Admin/PurchaseOrder" class="dropdown-item">
+            <i class="fas fa-file mr-2"></i>
+            <span id="orderCount">0 new orders</span>
+        </a>
+        <div class="dropdown-divider"></div>
+
+        <a href="/Admin/ConsignmentOrder" class="dropdown-item">
+            <i class="fas fa-file mr-2"></i>
+            <span id="ConsignOrderCount">0 new consignment orders</span>
+        </a>
+        <div class="dropdown-divider"></div>
+
+        <a href="/Admin/Notification" class="dropdown-item dropdown-footer">See All Notifications</a>
+    </div>
+</li>
+
+<script>
+    function timeAgo(datetimeStr) {
+        if (!datetimeStr) return "N/A";
+        const now = new Date();
+        const past = new Date(datetimeStr);
+        const diffMs = now - past;
+
+        const diffMins = Math.floor(diffMs / 60000);
+        if (diffMins < 60) return `${diffMins} mins ago`;
+        const diffHours = Math.floor(diffMins / 60);
+        if (diffHours < 24) return `${diffHours} hours ago`;
+        const diffDays = Math.floor(diffHours / 24);
+        return `${diffDays} days ago`;
+    }
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Admin/Notification/GetAdminNotifications',
+            type: 'GET',
+            success: function (res) {
+                const newMessages = Number(res.newMessages) || 0;
+                const newOrders = Number(res.newOrders) || 0;
+                const newConsignOrders = Number(res.newConsignOrders) || 0;
+
+                const totalNotifications = newMessages + newOrders + newConsignOrders;
+
+                $('#notificationCount').text(totalNotifications);
+                $('#notificationHeader').text(`${totalNotifications} Notifications`);
+
+                $('#messageCount').text(`${newMessages} new messages`);
+                $('#lastMessageTime').text(timeAgo(res.lastMessageTime));
+                $('#orderCount').text(`${newOrders} new orders`);
+                $('#ConsignOrderCount').text(`${newConsignOrders} new consignment orders`);
+
+            },
+            error: function () {
+                console.error("⚠️ Failed to fetch notifications.");
+            }
+        });
+    });
+</script>

@@ -171,14 +171,7 @@ namespace ConsignmentWebsite.Areas.Admin.Controllers
                 if (result.Succeeded)
                 {
                     UserManager.AddToRole(user.Id, model.Role);
-                    //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
+                    
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
@@ -259,6 +252,27 @@ namespace ConsignmentWebsite.Areas.Admin.Controllers
             ViewBag.Role = new SelectList(db.Roles.ToList(), "Name", "Name", model.Role);
             return View(model);
         }
-
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
+        [HttpPost]
+        public async Task<ActionResult> Delete(string user,string id)
+        {
+            var code = new { Success = false };
+            var item = UserManager.FindByName(user);
+            if (item != null)
+            {
+                var rolesForUser = UserManager.GetRoles(id);
+                foreach (var role in rolesForUser)
+                {
+                    await UserManager.RemoveFromRoleAsync(id, role);
+                }
+                //var DeleteItem = db.News.Attach(item)
+                var res = await UserManager.DeleteAsync(item);
+                code = new { Success = res.Succeeded };
+            }
+            return Json(code);
+        }
     }
 }

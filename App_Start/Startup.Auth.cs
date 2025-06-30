@@ -32,7 +32,7 @@ namespace ConsignmentWebsite
                     // This is a security feature which is used when you change a password or add an external login to your account.  
                     OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
                         validateInterval: TimeSpan.FromMinutes(30),
-                        regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
+                        regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager, DefaultAuthenticationTypes.ApplicationCookie))
                 }
             });            
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
@@ -58,11 +58,16 @@ namespace ConsignmentWebsite
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "1092755492369-pvqi3uu7cutt9ac31i056nul40iek9k7.apps.googleusercontent.com",
+                ClientSecret = "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",
+                CallbackPath = new PathString("/signin-google")
+            });
+            
+
+
         }
+
     }
 }

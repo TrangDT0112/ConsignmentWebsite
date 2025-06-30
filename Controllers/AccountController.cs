@@ -9,12 +9,15 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ConsignmentWebsite.Models;
+using ConsignmentWebsite.Models.EF;
+using System.Configuration;
 
 namespace ConsignmentWebsite.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -200,35 +203,63 @@ namespace ConsignmentWebsite.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/ForgotPassword
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            if (ModelState.IsValid)
+            string logPath = @"D:\log_forgotpw.txt";
+            string fromEmail = ConfigurationManager.AppSettings["Email"]; // "thutrang1102demon@gmail.com"
+
+            try
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                System.IO.File.AppendAllText(logPath, $"{DateTime.Now}: Start ForgotPassword with email: {model.Email}\n");
+
+                if (!ModelState.IsValid)
                 {
-                    // Don't reveal that the user does not exist or is not confirmed
+                    System.IO.File.AppendAllText(logPath, $"{DateTime.Now}: ModelState invalid\n");
+                    return View(model);
+                }
+
+                var user = await UserManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    System.IO.File.AppendAllText(logPath, $"{DateTime.Now}: No user found with email: {model.Email}\n");
                     return View("ForgotPasswordConfirmation");
                 }
 
-                // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
-            }
+                System.IO.File.AppendAllText(logPath, $"{DateTime.Now}: User found: ID = {user.Id}, Email = {user.Email}\n");
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+                var code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+
+                System.IO.File.AppendAllText(logPath, $"{DateTime.Now}: callbackUrl = {callbackUrl}\n");
+
+                bool result = ConsignmentWebsite.Common.Common.SendMail(
+                    fromEmail,
+                    model.Email, // ✅ sửa đúng thứ tự
+                    "Forgot password",
+                    $"Please click <a href='{callbackUrl}'>this link</a> to reset your password."
+                );
+
+                System.IO.File.AppendAllText(logPath, $"{DateTime.Now}: SendMail result = {result}\n");
+
+                if (!result)
+                {
+                    ViewBag.Error = "Email could not be sent. Please try again later.";
+                    return View(model);
+                }
+
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
+            }
+            catch (Exception ex)
+            {
+                System.IO.File.AppendAllText(logPath, $"{DateTime.Now}: Exception Error - {ex}\n");
+                ViewBag.Error = ex.Message;
+                return View(model);
+            }
         }
 
-        //
         // GET: /Account/ForgotPasswordConfirmation
         [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmation()
@@ -241,8 +272,15 @@ namespace ConsignmentWebsite.Controllers
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
-            return code == null ? View("Error") : View();
+            if (code == null)
+            {
+                return View("Error");
+            }
+
+            var model = new ResetPasswordViewModel { Code = code };
+            return View(model);
         }
+
 
         //
         // POST: /Account/ResetPassword
@@ -277,19 +315,7 @@ namespace ConsignmentWebsite.Controllers
         {
             return View();
         }
-
-        //
-        // POST: /Account/ExternalLogin
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public ActionResult ExternalLogin(string provider, string returnUrl)
-        {
-            // Request a redirect to the external login provider
-            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
-        }
-
-        //
+        
         // GET: /Account/SendCode
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
@@ -324,6 +350,16 @@ namespace ConsignmentWebsite.Controllers
             return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ExternalLogin(string provider, string returnUrl)
+        {
+
+            // Request a redirect to the external login provider
+            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
+        }
+
         //
         // GET: /Account/ExternalLoginCallback
         [AllowAnonymous]
@@ -341,10 +377,6 @@ namespace ConsignmentWebsite.Controllers
             {
                 case SignInStatus.Success:
                     return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
                 case SignInStatus.Failure:
                 default:
                     // If the user does not have an account, then prompt the user to create an account
@@ -353,18 +385,11 @@ namespace ConsignmentWebsite.Controllers
                     return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
             }
         }
-
-        //
-        // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Manage");
-            }
 
             if (ModelState.IsValid)
             {
@@ -391,7 +416,6 @@ namespace ConsignmentWebsite.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
         }
-
         //
         // POST: /Account/LogOff
         [HttpPost]
@@ -488,5 +512,29 @@ namespace ConsignmentWebsite.Controllers
             }
         }
         #endregion
+        public async Task<ActionResult> Profile()
+        {
+            var user = await UserManager.FindByNameAsync(User.Identity.Name);
+            var item = new RegisterViewModel();
+            item.Email = user.Email;
+            item.FullName = user.Fullname;
+            item.Phone = user.Phone;
+            item.UserName = user.UserName;
+            return View(user);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> PostProfile(ApplicationUser req)
+        {
+            var user = await UserManager.FindByEmailAsync(req.Email);
+            user.Fullname = req.Fullname;
+            user.Phone = req.Phone;
+            var rs = await UserManager.UpdateAsync(user);
+            if (rs.Succeeded)
+            {
+                return RedirectToAction("Profile");
+            }
+            return View(req);
+        }
     }
 }

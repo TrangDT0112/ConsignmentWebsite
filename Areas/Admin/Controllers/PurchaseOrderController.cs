@@ -38,18 +38,48 @@ namespace ConsignmentWebsite.Areas.Admin.Controllers
 
             return PartialView(items);
         }
-        public ActionResult UpdateStatus(int id, int status)
+        [HttpPost]
+        public JsonResult UpdateStatus(int id, int status, int shippingStatus)
         {
-            var item = db.Orders.Find(id);
-            if(item != null)
+            try
             {
-                db.Orders.Attach(item);
-                item.TypePayment = status;
-                db.Entry(item).Property(x => x.TypePayment).IsModified = true;
+                var order = db.Orders.Find(id);
+                if (order == null)
+                {
+                    return Json(new { success = false, message = "Order not found" });
+                }
+
+                order.Status = status;
+                order.ShippingStatus = shippingStatus;
                 db.SaveChanges();
-                return Json(new { message = "Success", success = true });
+
+                return Json(new { success = true });
             }
-            return Json(new { message = "Unsuccess", success = false });
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }); // Gửi thông báo lỗi về JS
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult DeleteAll(string ids)
+        {
+            if (!string.IsNullOrEmpty(ids))
+            {
+                var items = ids.Split(',');
+                if (items != null && items.Any())
+                {
+                    foreach (var item in items)
+                    {
+                        var obj = db.Orders.Find(Convert.ToInt32(item));
+                        db.Orders.Remove(obj);
+                        db.SaveChanges();
+                    }
+                }
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
         }
     }
 }

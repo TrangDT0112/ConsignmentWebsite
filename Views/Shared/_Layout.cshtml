@@ -32,33 +32,6 @@
                     <div class="col-md-6 text-right">
                         <div class="top_nav_right">
                             <ul class="top_nav_menu">
-
-                                <!-- Currency / Language / My Account -->
-
-                                <li class="currency">
-                                    <a href="#">
-                                        usd
-                                        <i class="fa fa-angle-down"></i>
-                                    </a>
-                                    <ul class="currency_selection">
-                                        <li><a href="#">cad</a></li>
-                                        <li><a href="#">aud</a></li>
-                                        <li><a href="#">eur</a></li>
-                                        <li><a href="#">gbp</a></li>
-                                    </ul>
-                                </li>
-                                <li class="language">
-                                    <a href="#">
-                                        English
-                                        <i class="fa fa-angle-down"></i>
-                                    </a>
-                                    <ul class="language_selection">
-                                        <li><a href="#">French</a></li>
-                                        <li><a href="#">Italian</a></li>
-                                        <li><a href="#">German</a></li>
-                                        <li><a href="#">Spanish</a></li>
-                                    </ul>
-                                </li>
                                 <li class="account">
                                     @if (!Request.IsAuthenticated)
                                     {
@@ -77,8 +50,9 @@
                                             @User.Identity.Name
                                             <i class="fa fa-angle-down"></i>
                                         </a>
-                                        <ul class="account_selection">
-                                            <li><a href="/"><i class="fa fa-sign-in" aria-hidden="true"></i>Profile</a></li>
+                                        <ul class="account_selection" style="width: 150px;">
+                                            <li><a href="/account/profile"><i class="fa fa-sign-in" aria-hidden="true"></i>Profile</a></li>
+                                            <li><a href="/wishlist/index"><i class="fa fa-sign-in" aria-hidden="true"></i>Favorite product</a></li>
                                             <li><a href="javascript:document.getElementById('logOffForm').submit()"><i class="fa fa-user-plus" aria-hidden="true"></i>Log out</a></li>
                                         </ul>
                                     }
@@ -119,7 +93,7 @@
                             </div>
                             <ul class="navbar_user">
                                 <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
-                                <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+                                <li><a href="/account/profile"><i class="fa fa-user" aria-hidden="true"></i></a></li>
                                 <li class="checkout">
                                     <a href="/shoppingcart">
                                         <i class="fa fa-shopping-cart" aria-hidden="true"></i>
@@ -134,13 +108,14 @@
         </div>
     </header>
 
+
     @RenderBody()
 
     <script src="~/Content/assets/styles/bootstrap4/popper.js"></script>
     <script src="~/Content/assets/styles/bootstrap4/bootstrap.min.js"></script>
     <script src="~/Content/assets/plugins/Isotope/isotope.pkgd.min.js"></script>
     <script src="~/Content/assets/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
-    <script src="~/Content/assets/plugins/easing/easing.js"></script>
+    @*<script src="~/Content/assets/plugins/easing/easing.js"></script>*@
     <script src="~/Content/assets/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
     <script src="~/Content/assets/js/custom.js"></script>
     <script src="~/Scripts/jquery.validate.min.js"></script>
@@ -154,6 +129,7 @@
                       language-code="en"></df-messenger>*@
 
     @Html.Partial("_FooterPage")
+
 
 </body>
 

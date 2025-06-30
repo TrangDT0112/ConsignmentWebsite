@@ -1,0 +1,48 @@
+2025-05-05 16:21:59 - === SendMail START ===
+2025-05-05 16:21:59 - Before smtp.Send
+2025-05-05 16:22:02 - After smtp.Send
+2025-05-05 17:42:08 - === SendMail START ===
+2025-05-05 17:42:08 - EXCEPTION: System.FormatException: The specified string is not in the form required for an e-mail address.
+   at System.Net.Mail.MailAddressParser.ReadCfwsAndThrowIfIncomplete(String data, Int32 index)
+   at System.Net.Mail.MailAddressParser.ParseDomain(String data, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data, Boolean expectMultipleAddresses, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data)
+   at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at ConsignmentWebsite.Common.Common.SendMail(String fromEmail, String toEmail, String subject, String body) in D:\ConsignmentWebsite\Common\Common.cs:line 45
+2025-05-05 18:06:40 - === SendMail START ===
+2025-05-05 18:06:40 - EXCEPTION: System.FormatException: The specified string is not in the form required for an e-mail address.
+   at System.Net.Mail.MailAddressParser.ReadCfwsAndThrowIfIncomplete(String data, Int32 index)
+   at System.Net.Mail.MailAddressParser.ParseDomain(String data, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data, Boolean expectMultipleAddresses, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data)
+   at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at ConsignmentWebsite.Common.Common.SendMail(String fromEmail, String toEmail, String subject, String body) in D:\ConsignmentWebsite\Common\Common.cs:line 45
+2025-05-05 18:16:36 - === SendMail START ===
+2025-05-05 18:16:36 - EXCEPTION: System.FormatException: The specified string is not in the form required for an e-mail address.
+   at System.Net.Mail.MailAddressParser.ReadCfwsAndThrowIfIncomplete(String data, Int32 index)
+   at System.Net.Mail.MailAddressParser.ParseDomain(String data, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data, Boolean expectMultipleAddresses, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data)
+   at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at ConsignmentWebsite.Common.Common.SendMail(String fromEmail, String toEmail, String subject, String body) in D:\ConsignmentWebsite\Common\Common.cs:line 45
+2025-05-05 18:17:06 - === SendMail START ===
+2025-05-05 18:17:06 - EXCEPTION: System.FormatException: The specified string is not in the form required for an e-mail address.
+   at System.Net.Mail.MailAddressParser.ReadCfwsAndThrowIfIncomplete(String data, Int32 index)
+   at System.Net.Mail.MailAddressParser.ParseDomain(String data, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data, Boolean expectMultipleAddresses, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data)
+   at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at ConsignmentWebsite.Common.Common.SendMail(String fromEmail, String toEmail, String subject, String body) in D:\ConsignmentWebsite\Common\Common.cs:line 45
+2025-05-05 18:35:15 - === SendMail START ===
+2025-05-05 18:35:15 - GENERAL EXCEPTION: System.FormatException: The specified string is not in the form required for an e-mail address.
+   at System.Net.Mail.MailAddressParser.ReadCfwsAndThrowIfIncomplete(String data, Int32 index)
+   at System.Net.Mail.MailAddressParser.ParseDomain(String data, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data, Boolean expectMultipleAddresses, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data)
+   at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at ConsignmentWebsite.Common.Common.SendMail(String fromEmail, String toEmail, String subject, String body) in D:\ConsignmentWebsite\Common\Common.cs:line 48
